@@ -7,11 +7,12 @@ from hashlib import md5
 
 class Captcha(object):
 
-    def __init__(self, username, password, soft_id):
-        self.username = username
-        password =  password.encode('utf8')
-        self.password = md5(password).hexdigest()
-        self.soft_id = soft_id
+    def __init__(self):
+        self.username = ''
+        password = ''
+        self.password = md5(password.encode('utf8')).hexdigest()
+        self.soft_id = ''
+
         self.base_params = {
             'user': self.username,
             'pass2': self.password,
@@ -25,7 +26,7 @@ class Captcha(object):
     def PostPic(self, im, codetype):
         params = {
             'codetype': codetype,
-            'file_base64': b64
+            'file_base64': self.b64
         }
         params.update(self.base_params)
         files = {'userfile': ('ccc.jpg', im)}
@@ -40,10 +41,8 @@ class Captcha(object):
         r = requests.post('http://upload.chaojiying.net/Upload/ReportError.php', data=params, headers=self.headers)
         return r.json()
 
-def main(img):
-    global b64
-    code = Captcha('username', 'password', 'appid')
-    b64 = re.findall(r'data:image/png;base64,(.*)', img)[0]
-    response = (code.PostPic(b64, 1902))
-    print('Result: ' + response['pic_str'])
-    return response['pic_str']
+    def decrypt_captcha(self, img):
+        self.b64 = re.findall(r'data:image/png;base64,(.*)', img)[0]
+        response = (self.PostPic(self.b64, 1902))
+        print('Result: ' + response['pic_str'])
+        return response['pic_str']
