@@ -12,7 +12,7 @@
 - [x] Multi-account support
 - [x] QQ / Wechat notification
 - [x] WebUI management
-- [ ] Failure warning from backup server
+- [ ] ~~Failure warning from backup server~~ No longer needed, just go and subscribe the official wechat account to get the alarm.
 - [ ] Non-GUI mode to reduce hardware utilization
 
 ## Requirements
@@ -25,12 +25,32 @@ pip install -r requirements.txt
 
 SU_T students :D
 
-## Support Modes
+## Usage
 
-- Regular daily report `Node.JS version only`
-- Winter vacation mode
+1. Install requirements via pip
+
+2. Type your accounts in `accounts.py`
+
+3. Type your `Miraibot` and `ServerChan`  stuff in `notification.py` 
+
+4. Set your Chaoyiying accounts in `captcha.py`
+
+5. Launch `cmd` and type `python main.py` to test if it works
+
+6. Set schedule rule in Control Panel
+
+   > PS: If you don't need notification push, just **hashtag** relevant columns in **EVERY** `.py` files  
 
 ## Change Log
+
+- 2021.03.06
+
+  > 1. Add support for new api
+  >
+  > 2. Update README.md
+  >
+  > 3. Update LICENSE 
+
 - 2021.02.28
 
   > A LOT OF CHANGES

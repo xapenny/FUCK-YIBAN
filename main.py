@@ -18,7 +18,7 @@ if __name__ == '__main__':
             mark_time = os.path.getmtime(notification_mark)
             delta = begin_time - mark_time
             # Is the mark expired?
-            if delta > 21600:
+            if delta > 10800:
                 os.remove(notification_mark)
     # Set bots
     qqbot = MiraiBot()
@@ -71,8 +71,9 @@ if __name__ == '__main__':
                 except Exception as e:
                     print('FATAL ERROR')
                     print(e)
-# Send summary to WeChat
+# Send summary to admin
 summary = 'Success username: ' + '、'.join(successed_users) + ' Total time: {:.1f}s'.format(time.time() - begin_time)
 wechatbot.send_wechat_message(summary)
+qqbot.alert_admin(summary)
 # Release mirai session
 qqbot.release_session()

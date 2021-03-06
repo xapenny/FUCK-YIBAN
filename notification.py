@@ -96,7 +96,6 @@ class MiraiBot:
 
 class ServerChan:
     def __init__(self):
-        # Enter full svc url here!
         self.serverchan_sckey = ''
     
     def send_wechat_message(self, payload):

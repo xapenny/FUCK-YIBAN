@@ -16,6 +16,15 @@ class Card:
         options.add_experimental_option('mobileEmulation', mobileEmulation)
         options.add_argument('appversion=4.9.5')
         options.add_argument('X-Requested-With= com.yiban.app')
+        self.hour = time.strftime("%H", time.localtime())
+        if self.hour in ['06','07','08']:
+            self.exec_method = '晨检上报'
+            self.frame_abbr = ['field_1588749561_2922','field_1588749738_1026','field_1588749759_6865','field_1588749842_2715']
+        elif self.hour in ['12','13','14']:
+            self.exec_method = '午检上报'
+            self.frame_abbr = ['field_1588750276_2934','field_1588750304_5363','field_1588750323_2500','field_1588750343_3510']
+        else:
+            print('时间不正确')
         self.browser = webdriver.Chrome('chromedriver.exe',options=options)
         self.params = {
             "latitude": 34.203139,
@@ -38,7 +47,8 @@ class Card:
         browser.get("http://f.yiban.cn/iapp610661")
         browser.set_window_size(414,896)
         # Open specific iap
-        browser.find_element_by_xpath('//p[text()="寒假信息上报"]').click()
+        # browser.find_element_by_xpath('//p[text()="寒假信息上报"]').click()
+        browser.find_element_by_xpath('//p[text()="' + self.exec_method + '"]').click()
         time.sleep(3)
         # Did u already finished the process?
         try:
@@ -59,21 +69,18 @@ class Card:
             browser.execute_script("document.getElementsByClassName('weui-mask_transparent')[0].style.display='none'")
             browser.execute_script("document.getElementsByClassName('weui-toast weui_loading_toast weui-toast--visible')[0].style.display='none'")
             # Remove read-only attribute
-            browser.execute_script("$('input[id=field_1587635120_1722]').removeAttr('readonly')")
-            browser.execute_script("$('input[id=field_1587635142_8919]').removeAttr('readonly')")
-            browser.execute_script("$('input[id=field_1587635252_7450]').removeAttr('readonly')")
-            browser.execute_script("$('input[id=field_1587635509_7740]').removeAttr('readonly')")
-            browser.execute_script("$('input[id=field_1587998777_8524]').removeAttr('readonly')")
+            time.sleep(1)
+            for abbr in self.frame_abbr:
+                browser.execute_script("$('input[id=" + abbr + "]').removeAttr('readonly')")
             time.sleep(1)
             # Fill in blanks
-            browser.find_element_by_id('field_1587635120_1722').send_keys('36.5')
-            #browser.find_element_by_id('field_1587635120_1722').click()
-            browser.find_element_by_id('field_1587635142_8919').send_keys('正常')
-            browser.find_element_by_id('field_1587635252_7450').send_keys(location)
-            browser.find_element_by_id('field_1587635509_7740').send_keys('否')
-            browser.find_element_by_id('field_1587998777_8524').send_keys('否')
+            print(self.frame_abbr[0])
+            browser.find_element_by_id(self.frame_abbr[0]).send_keys('36.5')
+            browser.find_element_by_id(self.frame_abbr[1]).send_keys('陕西省西安市未央区龙朔路靠近陕西科技大学学生生活区')
+            browser.find_element_by_id(self.frame_abbr[2]).send_keys('是')
+            browser.find_element_by_id(self.frame_abbr[3]).send_keys('否')
             print('filled!')
-            time.sleep(1)
+            time.sleep(5)
             # Bypass Captcha
             captcha_bypass = Captcha()
             captcha_encrypted = browser.find_element_by_id('captcha').get_attribute('src')
@@ -91,4 +98,5 @@ class Card:
             except Exception as e:
                 print('Failed to save screenshot!')
                 print(e)
+            browser.quit()
             return(0)
