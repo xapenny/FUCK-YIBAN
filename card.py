@@ -38,11 +38,19 @@ class Card:
         browser.execute_cdp_cmd("Emulation.setGeolocationOverride", params)
         # Login
         browser.get('http://yiban.sust.edu.cn/v4/public/index.php/index/formtime/form.html')
-        browser.find_element_by_id('oauth_uname_w').send_keys(account)
-        browser.find_element_by_id('oauth_upwd_w').send_keys(password)
-        browser.find_element_by_css_selector('.oauth_check_login').click()
-        # wait for redirection
-        element = WebDriverWait(browser,20).until(EC.url_matches('yiban.sust.edu.cn'))
+        try:
+            browser.find_element_by_id('oauth_uname_w').send_keys(account)
+            browser.find_element_by_id('oauth_upwd_w').send_keys(password)
+            browser.find_element_by_css_selector('.oauth_check_login').click()
+            # wait for redirection
+            element = WebDriverWait(browser,20).until(EC.url_matches('yiban.sust.edu.cn'))
+        except Exception as e:
+            browser.quit()
+            print('Operation failed! Attempting to reflash DNS cache...')
+            print(e)
+            fDNS = os.system('ipconfig /flushdns')
+            print(fDNS)
+            return(1)
         time.sleep(3)
         browser.get("http://f.yiban.cn/iapp610661")
         browser.set_window_size(414,896)
@@ -76,6 +84,9 @@ class Card:
             # Fill in blanks
             print(self.frame_abbr[0])
             browser.find_element_by_id(self.frame_abbr[0]).send_keys('36.5')
+            #browser.find_element_by_id('field_1587635120_1722').click()
+            #browser.find_element_by_id('field_1587635142_8919').send_keys('正常')
+            #browser.find_element_by_id('field_1587635252_7450').send_keys(location)#假期
             browser.find_element_by_id(self.frame_abbr[1]).send_keys('陕西省西安市未央区龙朔路靠近陕西科技大学学生生活区')
             browser.find_element_by_id(self.frame_abbr[2]).send_keys('是')
             browser.find_element_by_id(self.frame_abbr[3]).send_keys('否')

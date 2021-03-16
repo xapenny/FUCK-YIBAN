@@ -8,7 +8,8 @@ from hashlib import md5
 class Captcha(object):
 
     def __init__(self):
-        self.username = ''
+        #超翼鹰验证码识别平台账号信息
+        self.username = '' 
         password = ''
         self.password = md5(password.encode('utf8')).hexdigest()
         self.soft_id = ''

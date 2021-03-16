@@ -11,10 +11,11 @@ import urllib
 class MiraiBot:
 
     def __init__(self):
+        #如需使用QQ推送请在此填写bot信息
         self.botqq = ''
         self.adminqq = ''
         self.botauthkey = ''
-        self.botaddr = ''
+        self.botaddr = 'http://'
         session = self.get_session()
         self.session_code = session[0]
         self.session_body = session[1]
@@ -96,6 +97,7 @@ class MiraiBot:
 
 class ServerChan:
     def __init__(self):
+        #如需使用微信推送请在此填写bot信息
         self.serverchan_sckey = ''
     
     def send_wechat_message(self, payload):

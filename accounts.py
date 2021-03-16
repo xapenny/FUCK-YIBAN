@@ -2,7 +2,6 @@
 
 class Accounts:
     user_info = [
-        ('yiban_id','yiban_passwd','location','nickname','qq'), 
-        ('yiban_id','yiban_passwd','location','nickname','qq')
-        # ...
+        ('账号1','密码1','位置1(默认学校地址)','姓名1','QQ号'), 
+        ('账号2','密码2','位置2(默认学校地址)','姓名2','QQ号')
         ]

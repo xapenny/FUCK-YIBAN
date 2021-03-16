@@ -28,20 +28,21 @@ SU_T students :D
 ## Usage
 
 1. Install requirements via pip
+2. Install ` chromedriver` and `Google Chrome`
+3. Toggle bot on/off through `main.py`
+4. Type your accounts in `accounts.py`
+5. Configure your `Miraibot` and `ServerChan`  stuff in `notification.py` 
+6. Set your Chaoyiying accounts in `captcha.py`
+7. Launch `cmd` and type `python main.py` to test if it works
+8. Set schedule rule in Control Panel
 
-2. Type your accounts in `accounts.py`
-
-3. Type your `Miraibot` and `ServerChan`  stuff in `notification.py` 
-
-4. Set your Chaoyiying accounts in `captcha.py`
-
-5. Launch `cmd` and type `python main.py` to test if it works
-
-6. Set schedule rule in Control Panel
-
-   > PS: If you don't need notification push, just **hashtag** relevant columns in **EVERY** `.py` files  
 
 ## Change Log
+
+- 2021.03.16
+
+  > 1. Add bot toggles
+  > 2. Add codes to flush DNS cache
 
 - 2021.03.06
 
