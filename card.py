@@ -53,7 +53,9 @@ class Card:
             return(1)
         time.sleep(3)
         browser.get("http://f.yiban.cn/iapp610661")
-        browser.set_window_size(414,896)
+        time.sleep(5)
+        browser.set_window_size(375,1000)
+        time.sleep(5)
         # Open specific iap
         # browser.find_element_by_xpath('//p[text()="寒假信息上报"]').click()
         browser.find_element_by_xpath('//p[text()="' + self.exec_method + '"]').click()

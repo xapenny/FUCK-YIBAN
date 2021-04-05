@@ -24,8 +24,6 @@ if __name__ == '__main__':
             if delta > 10800:
                 os.remove(notification_mark)
     # Set bots
-    if USE_QQ_BOT:
-        qqbot = MiraiBot()
     if USE_SVC:
         wechatbot = ServerChan()
     # Set success user
@@ -42,25 +40,7 @@ if __name__ == '__main__':
                 on_progress = clock_process.clock_yiban(userid,passwd,location)
                 print('User ' + username + ' clocked successfully!')
                 successed_users.append(username)
-                if os.path.exists('./images/' + userid + '.sent'):
-                    print('Sent notification, skipping...')
-                else:
-                    if USE_QQ_BOT:
-                        # Send to QQ
-                        try:
-                            send2qq = qqbot.send_image_from_file('./images/' + userid + '.png', userqq)
-                            if send2qq:
-                                print('Failed!')
-                            else:
-                                print('Sent to target qq!')
-                                # Set mark
-                                mark = open('./images/' + userid + '.sent', 'w+')
-                                mark.close()
-                        except Exception as eq:
-                            print('Something went wrong when sending qq message...')
-                            print(eq)
-                    else:
-                        pass
+                
                 print('Will continue after ' + str(pending) + 'secs...')
                 time.sleep(pending)
             except Exception as e:
@@ -70,16 +50,10 @@ if __name__ == '__main__':
                 on_progress = 1
             # Overtry alert
             if try_times % 10 == 0:
-                # Send QQ message to admin
                 alert_payload = 'Operation failed! Keep trying... Trys: ' + str(try_times) 
-                if USE_QQ_BOT:
-                    try:
-                        qqbot.alert_admin(alert_payload)
+                if USE_SVC:
                         # Send Wechat message to alert admin
                         wechatbot.send_wechat_message(alert_payload)
-                    except Exception as e:
-                        print('FATAL ERROR')
-                        print(e)
                 else:
                     print(alert_payload)
     # Send summary to admin
@@ -87,6 +61,24 @@ if __name__ == '__main__':
     if USE_SVC:
         wechatbot.send_wechat_message(summary)
     if USE_QQ_BOT:
+        qqbot = MiraiBot()
+        for userid in Accounts.user_info:
+            if os.path.exists('./images/' + userid + '.sent'):
+                        print('Sent notification, skipping...')
+            else:
+                # Send to QQ
+                try:
+                    send2qq = qqbot.send_image_from_file('./images/' + userid + '.png', userqq)
+                    if send2qq:
+                        print('Failed!')
+                    else:
+                        print('Sent to target qq!')
+                        # Set mark
+                        mark = open('./images/' + userid + '.sent', 'w+')
+                        mark.close()
+                except Exception as eq:
+                    print('Something went wrong when sending qq message...')
+                    print(eq)
         qqbot.alert_admin(summary)
         # Release mirai session
         qqbot.release_session()

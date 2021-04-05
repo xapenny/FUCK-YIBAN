@@ -36,8 +36,11 @@ SU_T students :D
 7. Launch `cmd` and type `python main.py` to test if it works
 8. Set schedule rule in Control Panel
 
-
 ## Change Log
+
+- 2021.04.05
+
+  > 1. Optimized code structure
 
 - 2021.03.16
 
