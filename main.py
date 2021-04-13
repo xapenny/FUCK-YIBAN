@@ -8,9 +8,9 @@ from notification import ServerChan
 from notification import Bark
 from accounts import Accounts
 
-USE_QQ_BOT = True #是否开启QQ推送 (基于Mirai框架)
-USE_SVC = True #是否开启微信推送 (基于Server Chan)
-USE_BARK = True #是否开启Bark推送
+USE_QQ_BOT = False #是否开启QQ推送 (基于Mirai框架)
+USE_SVC = False #是否开启微信推送 (基于Server Chan)
+USE_BARK = False #是否开启Bark推送
 
 if __name__ == '__main__':
     print('Preparing to start...')
