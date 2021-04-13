@@ -11,7 +11,7 @@ import urllib
 class MiraiBot:
 
     def __init__(self):
-        #如需使用QQ推送请在此填写bot信息
+        #使用Mirai机器人填写此项
         self.botqq = ''
         self.adminqq = ''
         self.botauthkey = ''
@@ -97,8 +97,8 @@ class MiraiBot:
 
 class ServerChan:
     def __init__(self):
-        #如需使用微信推送请在此填写bot信息
-        self.serverchan_sckey = ''
+        #使用ServerChan(旧版)填写此项
+        self.serverchan_sckey = 'https://sc.ftqq.com/你的Key.send'
     
     def send_wechat_message(self, payload):
         body = {
@@ -106,3 +106,12 @@ class ServerChan:
             "desp" : payload,
         }
         requests.get(url=self.serverchan_sckey, params=body)
+
+class Bark:
+    def __init__(self):
+        #使用Bark填写此项
+        self.pushkey = 'https://api.day.app/你的Key/'
+    
+    def send_bark_alert(self, payload):
+        body = self.pushkey + '易班打卡成功通知/' + payload
+        requests.get(url=body)

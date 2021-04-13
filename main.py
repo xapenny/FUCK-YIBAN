@@ -5,10 +5,12 @@ import random
 from card import Card
 from notification import MiraiBot
 from notification import ServerChan
+from notification import Bark
 from accounts import Accounts
 
 USE_QQ_BOT = True #是否开启QQ推送 (基于Mirai框架)
 USE_SVC = True #是否开启微信推送 (基于Server Chan)
+USE_BARK = True #是否开启Bark推送
 
 if __name__ == '__main__':
     print('Preparing to start...')
@@ -26,6 +28,8 @@ if __name__ == '__main__':
     # Set bots
     if USE_SVC:
         wechatbot = ServerChan()
+    if USE_BARK:
+        barkbot=Bark()
     # Set success user
     successed_users = []
     # Clocking
@@ -57,24 +61,24 @@ if __name__ == '__main__':
                 else:
                     print(alert_payload)
     # Send summary to admin
-    summary = 'Success username: ' + '、'.join(successed_users) + ' Total time: {:.1f}s'.format(time.time() - begin_time)
+    summary = '本次打卡成功！' + ' 共耗时{:.1f}s 用户：'.format(time.time() - begin_time) + '、'.join(successed_users) 
     if USE_SVC:
         wechatbot.send_wechat_message(summary)
     if USE_QQ_BOT:
         qqbot = MiraiBot()
         for userid in Accounts.user_info:
-            if os.path.exists('./images/' + userid + '.sent'):
+            if os.path.exists('./images/' + userid[0] + '.sent'):
                         print('Sent notification, skipping...')
             else:
                 # Send to QQ
                 try:
-                    send2qq = qqbot.send_image_from_file('./images/' + userid + '.png', userqq)
+                    send2qq = qqbot.send_image_from_file('./images/' + userid[0] + '.png', userid[4])
                     if send2qq:
                         print('Failed!')
                     else:
                         print('Sent to target qq!')
                         # Set mark
-                        mark = open('./images/' + userid + '.sent', 'w+')
+                        mark = open('./images/' + userid[0] + '.sent', 'w+')
                         mark.close()
                 except Exception as eq:
                     print('Something went wrong when sending qq message...')
@@ -82,3 +86,5 @@ if __name__ == '__main__':
         qqbot.alert_admin(summary)
         # Release mirai session
         qqbot.release_session()
+    if USE_BARK:
+        barkbot.send_bark_alert(summary)

@@ -38,6 +38,11 @@ SU_T students :D
 
 ## Change Log
 
+- 2021.04.13
+
+  > 1. Fixed a bug caused sending notification to unexpected person
+  > 2. Add Bark push for iOS
+
 - 2021.04.05
 
   > 1. Optimized code structure
