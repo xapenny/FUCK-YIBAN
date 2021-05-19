@@ -1,21 +1,20 @@
 #daily.py
 # coding=utf-8
 import requests
-import json as js
 import os
-import sys
 import urllib.request
 import json as js
 import urllib
+import urllib.parse
 
 class MiraiBot:
 
     def __init__(self):
-        #使用Mirai机器人填写此项
-        self.botqq = ''
-        self.adminqq = ''
-        self.botauthkey = ''
-        self.botaddr = 'http://'
+        # 使用QQ机器人(Mirai框架)填写此项
+        self.botqq = '' # 机器人QQ
+        self.adminqq = '' # 管理员QQ
+        self.botauthkey = '' # 连接密码
+        self.botaddr = 'http://' # 服务器地址
         session = self.get_session()
         self.session_code = session[0]
         self.session_body = session[1]
@@ -59,10 +58,10 @@ class MiraiBot:
 
     def send_to_qq_group(self, data_body, qq_group_id, atall='0'):
         if str(atall) == '0':
-            body_tobesent = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_group_id) + ''',"messageChain":[{"type": "Plain", "text":"''' + data_body + '"}]}'
+            payload_body = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_group_id) + ''',"messageChain":[{"type": "Plain", "text":"''' + data_body + '"}]}'
         else:
-            body_tobesent = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_group_id) + ''',"messageChain":[{"type": "AtAll"},{"type": "Plain", "text":"''' + data_body + '"}]}'
-        response4 = requests.post(url=self.botaddr + '/sendGroupMessage', data=body_tobesent.encode('utf-8'))
+            payload_body = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_group_id) + ''',"messageChain":[{"type": "AtAll"},{"type": "Plain", "text":"''' + data_body + '"}]}'
+        response4 = requests.post(url=self.botaddr + '/sendGroupMessage', data=payload_body.encode('utf-8'))
         r4t = response4.text
         print(r4t.replace('{"code":','[Console] [send_group_mirai] Code: ').replace(',"msg":'," | Message: ").replace(',"messageId":',' | Message ID: ').replace('}',''))
         return 0
@@ -72,8 +71,8 @@ class MiraiBot:
         return result
 
     def send_to_friend(self, data_body, qq_id):
-        body_tobesent = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_id) + ''',"messageChain":[{"type": "Plain", "text":"''' + data_body + '"}]}'
-        response4 = requests.post(url=self.botaddr + '/sendFriendMessage', data=body_tobesent.encode('utf-8'))
+        payload_body = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_id) + ''',"messageChain":[{"type": "Plain", "text":"''' + data_body + '"}]}'
+        response4 = requests.post(url=self.botaddr + '/sendFriendMessage', data=payload_body.encode('utf-8'))
         r4t = response4.text
         print(r4t.replace('{"code":','[Console] [send_group_mirai] Code: ').replace(',"msg":'," | Message: ").replace(',"messageId":',' | Message ID: ').replace('}',''))
         return 0
@@ -88,16 +87,50 @@ class MiraiBot:
         return result
         
     def send_image_to_friend(self, data_body, qq_id):
-        body_tobesent = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_id) + ''',"messageChain":[{"type": "Image", "imageId": "''' + data_body + '"}]}'
-        print(body_tobesent)
-        response4 = requests.post(url=self.botaddr + '/sendFriendMessage', data=body_tobesent.encode('utf-8'))
+        payload_body = '{"sessionKey":"' + self.session_code + '","target": ' + str(qq_id) + ''',"messageChain":[{"type": "Image", "imageId": "''' + data_body + '"}]}'
+        print(payload_body)
+        response4 = requests.post(url=self.botaddr + '/sendFriendMessage', data=payload_body.encode('utf-8'))
         r4t = response4.text
         print(r4t.replace('{"code":','[Console] [send_group_mirai] Code: ').replace(',"msg":'," | Message: ").replace(',"messageId":',' | Message ID: ').replace('}',''))
         return 0
 
+class XiaoLzBot:
+
+    def __init__(self):
+        # 使用QQ机器人(小栗子框架)填写此项
+        self.botqq = '' # 机器人QQ
+        self.adminqq = '' # 管理员QQ
+        self.botauthkey = '' # 连接密码 (32bit MD5 encryption)
+        self.botaddr = '' # 服务器地址
+        self.cookies = {'pass':self.botauthkey}
+
+    def send_to_qq_group(self, data_body, qq_group_id):
+        payload_body = 'fromqq=' + self.botqq + '&togroup=' + str(qq_group_id) + '&text=' + urllib.parse.quote(data_body)
+        response4 = requests.post(url=self.botaddr + '/sendgroupmsg', data=payload_body.encode('utf-8'), cookies=self.cookies)
+        r4t = response4.text
+        print(payload_body)
+        print(r4t)
+        return 0
+
+    def send_to_friend(self, data_body, qq_id):
+        payload_body = 'fromqq=' + self.botqq + '&toqq=' + str(qq_id) + '&text=' + urllib.parse.quote(data_body)
+        response4 = requests.post(url=self.botaddr + '/sendprivatemsg', data=payload_body.encode('utf-8'), cookies=self.cookies)
+        r4t = response4.text
+        # print(r4t)
+        return 0
+
+    def send_image_to_friends(self, image_path, qq_id):
+        # files = {'pic': open(image_path, 'rb')}           
+        payload_body = 'fromqq=' + self.botqq + '&toqq=' + str(qq_id) + '&fromtype=1&path=' + urllib.parse.quote(os.getcwd() + '\\' + image_path)
+        response = requests.post(url = self.botaddr + '/sendprivatepic', data=payload_body, cookies=self.cookies)
+        imageid = response.text.replace('\\','')[8:-2]
+        # print(imageid)
+        self.send_to_friend(imageid, qq_id)
+        return 0
+
 class ServerChan:
     def __init__(self):
-        #使用ServerChan(旧版)填写此项
+        # 使用ServerChan(旧版)填写此项
         self.serverchan_sckey = 'https://sc.ftqq.com/你的Key.send'
     
     def send_wechat_message(self, payload):
@@ -109,7 +142,7 @@ class ServerChan:
 
 class Bark:
     def __init__(self):
-        #使用Bark填写此项
+        # 使用Bark填写此项
         self.pushkey = 'https://api.day.app/你的Key/'
     
     def send_bark_alert(self, payload):

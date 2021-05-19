@@ -1,6 +1,5 @@
 #yibanPython.py 
 import os
-import sys
 import time
 from captcha import Captcha
 from selenium import webdriver
@@ -16,6 +15,7 @@ class Card:
         options.add_experimental_option('mobileEmulation', mobileEmulation)
         options.add_argument('appversion=4.9.5')
         options.add_argument('X-Requested-With= com.yiban.app')
+        options.add_argument('headless')
         self.hour = time.strftime("%H", time.localtime())
         if self.hour in ['06','07','08']:
             self.exec_method = '晨检上报'
@@ -54,7 +54,7 @@ class Card:
         time.sleep(3)
         browser.get("http://f.yiban.cn/iapp610661")
         time.sleep(5)
-        browser.set_window_size(375,1000)
+        browser.set_window_size(428,926)
         time.sleep(5)
         # Open specific iap
         # browser.find_element_by_xpath('//p[text()="寒假信息上报"]').click()

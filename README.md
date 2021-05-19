@@ -38,6 +38,12 @@ SU_T students :D
 
 ## Change Log
 
+- 2021.05.19
+
+  > 1. Added support for XiaoLz framework
+  > 2. Optimized code structure
+  > 3. Reduced system resource consumption
+
 - 2021.04.13
 
   > 1. Fixed a bug caused sending notification to unexpected person
