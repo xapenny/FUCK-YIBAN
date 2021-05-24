@@ -29,14 +29,15 @@ SU_T students :D
 
 1. Install requirements via pip
 2. Install ` chromedriver` and `Google Chrome`
-3. Toggle bot on/off through `main.py`
-4. Type your accounts in `accounts.py`
-5. Configure your `Miraibot` and `ServerChan`  stuff in `notification.py` 
-6. Set your Chaoyiying accounts in `captcha.py`
-7. Launch `cmd` and type `python main.py` to test if it works
-8. Set schedule rule in Control Panel
+3. Run `python3 initialize.py` and go through the whole settings
+4. Run `python3 main.py` and enjoy
 
 ## Change Log
+
+- 2021.05.24
+
+  > 1. Fully rewrite the code.
+  > 2. Removed support for Mirai framework due to the insane instability.
 
 - 2021.05.19
 

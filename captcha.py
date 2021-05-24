@@ -5,14 +5,19 @@ import re
 import requests
 from hashlib import md5
 
-class Captcha(object):
+settings = []
+with open('settings.json','r',encoding='utf-8') as setting_file:
+    settings = eval(setting_file.read())
+    setting_file.close()
+
+class Captcha():
 
     def __init__(self):
-        #超翼鹰验证码识别平台账号信息
-        self.username = '' 
-        password = ''
+        self.username = settings[3]['captcha_username']
+        password = settings[3]['captcha_passwd']
         self.password = md5(password.encode('utf8')).hexdigest()
-        self.soft_id = ''
+        self.soft_id = settings[3]['captcha_softid']
+        print(self.soft_id)
 
         self.base_params = {
             'user': self.username,
@@ -42,8 +47,11 @@ class Captcha(object):
         r = requests.post('http://upload.chaojiying.net/Upload/ReportError.php', data=params, headers=self.headers)
         return r.json()
 
-    def decrypt_captcha(self, img):
-        self.b64 = re.findall(r'data:image/png;base64,(.*)', img)[0]
-        response = (self.PostPic(self.b64, 1902))
+    def decrypt_captcha(self, img, type):
+        try:
+            self.b64 = re.findall(r'data:image/png;base64,(.*)', img)[0]
+        except:
+            self.b64 = img
+        response = (self.PostPic(self.b64, int(type)))
         print('Result: ' + response['pic_str'])
-        return response['pic_str']
+        return response

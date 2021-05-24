@@ -7,14 +7,18 @@ import json as js
 import urllib
 import urllib.parse
 
+settings = []
+with open('settings.json','r',encoding='utf-8') as setting_file:
+    settings = eval(setting_file.read())
+    setting_file.close()
+
 class MiraiBot:
 
     def __init__(self):
-        # 使用QQ机器人(Mirai框架)填写此项
-        self.botqq = '' # 机器人QQ
-        self.adminqq = '' # 管理员QQ
-        self.botauthkey = '' # 连接密码
-        self.botaddr = 'http://' # 服务器地址
+        self.botqq = ''
+        self.adminqq = ''
+        self.botauthkey = ''
+        self.botaddr = ''
         session = self.get_session()
         self.session_code = session[0]
         self.session_body = session[1]
@@ -97,11 +101,10 @@ class MiraiBot:
 class XiaoLzBot:
 
     def __init__(self):
-        # 使用QQ机器人(小栗子框架)填写此项
-        self.botqq = '' # 机器人QQ
-        self.adminqq = '' # 管理员QQ
-        self.botauthkey = '' # 连接密码 (32bit MD5 encryption)
-        self.botaddr = '' # 服务器地址
+        self.botqq = settings[0]['botqq']
+        self.adminqq = settings[0]['adminqq']
+        self.botauthkey = settings[0]['botauthkey'] #32bit MD5 encryption
+        self.botaddr = settings[0]['botaddr']
         self.cookies = {'pass':self.botauthkey}
 
     def send_to_qq_group(self, data_body, qq_group_id):
@@ -130,8 +133,7 @@ class XiaoLzBot:
 
 class ServerChan:
     def __init__(self):
-        # 使用ServerChan(旧版)填写此项
-        self.serverchan_sckey = 'https://sc.ftqq.com/你的Key.send'
+        self.serverchan_sckey = 'https://sc.ftqq.com/{}.send'.format(settings[1]['svc_key'])
     
     def send_wechat_message(self, payload):
         body = {
@@ -142,9 +144,8 @@ class ServerChan:
 
 class Bark:
     def __init__(self):
-        # 使用Bark填写此项
-        self.pushkey = 'https://api.day.app/你的Key/'
+        self.pushkey = 'https://api.day.app/{}/'.format(settings[2]['bark_key'])
     
-    def send_bark_alert(self, payload):
-        body = self.pushkey + '易班打卡成功通知/' + payload
+    def send_bark_alert(self, title, payload):
+        body = self.pushkey + title + '/' + payload
         requests.get(url=body)
