@@ -11,7 +11,7 @@ class Initialize:
         options.add_argument('--incognito')
         options.add_argument('appversion=4.9.5')
         options.add_argument('X-Requested-With=com.yiban.app')
-        self.browser = webdriver.Chrome('chromedriver',options=options)
+        self.browser = webdriver.Chrome('chromedriver.exe',options=options)
 
 
     def init(self):
