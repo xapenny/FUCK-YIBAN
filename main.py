@@ -9,7 +9,7 @@ from notification import Bark
 from notification import XiaoLzBot
 
 settings = []
-with open('settings.json','r',encoding='utf-8') as setting_file:
+with open('settings.json','r') as setting_file:
     settings = eval(setting_file.read())
     setting_file.close()
 
@@ -23,7 +23,7 @@ USE_SVC = settings[1]['USE_SVC'] #是否开启微信推送 (基于Server Chan)
 USE_BARK = settings[2]['USE_BARK'] #是否开启Bark推送
 
 if __name__ == '__main__':
-    print('准备开始打卡……')
+    print('准备开始打卡'.center(50,'#'))
     # Get time
     begin_time = time.time()
     # Cleaning cache...
@@ -55,21 +55,24 @@ if __name__ == '__main__':
             error = ''
             try:
                 try_times += 1  # Count total trys
-                print("第{}次尝试开始".format(try_times))
+                print("\n>> {} 的第{}次尝试开始".format(accounts_info['name'],try_times))
                 on_progress = Card().clock_yiban(accounts_info['userid'],accounts_info['url'])
-                print('尝试为{}打卡成功！'.format(accounts_info['name']))
+                if on_progress == 0:
+                    print('[O]尝试为 {} 打卡成功！'.format(accounts_info['name']))
+                else:
+                    print('[!]尝试为 {} 打卡失败！'.format(accounts_info['name']))
                 successed_users.append(accounts_info['name'])
-                print('将在{}秒后尝试下一位'.format(pending))
+                print('[i]将在{}秒后尝试下一位\n'.format(pending))
                 time.sleep(pending)
             except Exception as err:
-                print('遇到了以下问题！将在{}秒后继续尝试'.format(pending))
+                print('[!]遇到了以下问题！将在{}秒后继续尝试\n'.format(pending))
                 print(err)
                 time.sleep(pending)
                 on_progress = 1
                 error = err
             # Overtry alert
             if try_times > 15:
-                fail = '已经尝试为{}打卡失败{}次，将不再尝试，请手动打卡！\n\n失败原因：{}'.format(accounts_info['name'], pending, error)
+                fail = '[!]已经尝试为{}打卡失败{}次，将不再尝试，请手动打卡！\n\n失败原因：{}'.format(accounts_info['name'], pending, error)
                 print(fail)
                 on_progress = 0
                 if os.path.exists('./images/{}.png'.format(accounts_info['userid'])):
@@ -81,7 +84,7 @@ if __name__ == '__main__':
                 if USE_BARK:
                     barkbot.send_bark_alert('易班打卡失败通知', alert_payload)
             elif try_times % 10 == 0:
-                alert_payload = '尝试为{}打卡失败！已经尝试{}次，继续尝试中。。。\n\n失败原因：{}'.format(accounts_info['name'], str(try_times),error)
+                alert_payload = '[!]尝试为{}打卡失败！已经尝试{}次，继续尝试中。。。\n\n失败原因：{}'.format(accounts_info['name'], str(try_times),error)
                 print(alert_payload)
                 if USE_SVC:
                         # Send Wechat message to alert admin
@@ -92,55 +95,67 @@ if __name__ == '__main__':
                         XiaoLzBot().send_to_friend(alert_payload, accounts_info['userqq'])
                 if USE_BARK:
                     barkbot.send_bark_alert('易班打卡失败通知', alert_payload)
+    # Notification
+    print('\n')
+    print('开始推送通知'.center(50,'#'))
+    print('\n')
     # Send summary to admin
     summary = '本次打卡成功！' + ' 共耗时{:.1f}s 用户：'.format(time.time() - begin_time) + '、'.join(successed_users) 
     if USE_BARK:
         if os.path.exists('./images/bark.sent'):
-            print('已经推送过Bark消息了，跳过……')
+            print('[O]已经推送过Bark消息了，跳过……')
         else:
+            print('[i]开始推送Bark消息')
             barkbot.send_bark_alert('易班打卡成功通知', summary)
-            with open('bark.sent','w') as b:
+            with open('./images/bark.sent','w') as b:
                 b.close()
     if USE_SVC:
         if os.path.exists('./images/wechat.sent'):
-            print("已经推送过微信消息了，跳过……")
+            print("[O]已经推送过微信消息了，跳过……")
         else:
             wechatbot.send_wechat_message(summary)
-            with open('wechat.sent','w') as w:
+            print('[i]开始推送微信消息')
+            with open('./images/wechat.sent','w') as w:
                 w.close()
     if USE_QQ_BOT:
         for user_info in accounts:
-            if os.path.exists('./images/{}.sent'.format(user_info[0]['userid'])):
-                        print('已经推送过QQ消息了，跳过……')
+            if os.path.exists('./images/{}.sent'.format(user_info['userid'])):
+                        print('[O]已经推送过QQ消息了，跳过……')
             else:
                 # Send to QQ
                 if USE_QQ_BOT == 1:
                     try:
+                        print('[i]开始推送QQ消息')
                         qqbot = MiraiBot()
-                        send2qq = qqbot.send_image_from_file('./images/{}.png'.format(user_info[0]['userid']), user_info[0]['userqq'])
+                        send2qq = qqbot.send_image_from_file('./images/{}.png'.format(user_info['userid']), user_info['userqq'])
                         if send2qq:
-                            print('发送QQ截图失败！')
+                            print('[!]发送QQ截图失败！')
                         else:
-                            print('已经将结果发送至目标QQ！')
+                            print('[!]已经将结果发送至目标QQ！')
                             # Set mark
-                            mark = open('./images/{}.sent'.format(user_info[0]['userid']), 'w+')
+                            mark = open('./images/{}.sent'.format(user_info['userid']), 'w+')
                             mark.close()
                     except Exception as eq:
-                        print('遇到了以下问题，推送QQ消息失败！')
+                        print('[!]遇到了以下问题，推送QQ消息失败！')
                         print(eq)
                 else:
                     try:
                         qqbot = XiaoLzBot()
-                        payload = 'images\\' + user_info[0]['userid'] + '.png'
+                        payload = 'images\\' + user_info['userid'] + '.png'
                         if os.path.exists(payload):
-                            send2qq = qqbot.send_image_to_friends(payload, user_info[0]['userqq'])
+                            send2qq = qqbot.send_image_to_friends(payload, user_info['userqq'])
                             if send2qq:
-                                print('发送QQ截图失败！')
+                                print('[!]发送QQ截图失败！')
                             else:
-                                print('已经将结果发送至目标QQ！')
+                                print('[O]已经将结果发送至目标QQ！')
                         # Set mark
-                        mark = open('./images/{}.sent'.format(user_info[0]['userid']), 'w+')
+                        mark = open('./images/{}.sent'.format(user_info['userid']), 'w+')
                         mark.close()
                     except Exception as eq:
-                        print('遇到了以下问题，推送QQ消息失败！')
+                        print('[!]遇到了以下问题，推送QQ消息失败！')
                         print(eq)
+    print('\n')
+    print('结果通知'.center(50,'#'))
+    print('\n')
+    print('[i]打卡完成！5秒后退出...')
+    time.sleep(5)

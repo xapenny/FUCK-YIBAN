@@ -34,6 +34,10 @@ SU_T students :D
 
 ## Change Log
 
+- 2021.05.25
+
+  > 1. Fixed Bark push not working
+
 - 2021.05.24
 
   > 1. Fully rewrite the code.
