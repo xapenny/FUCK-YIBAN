@@ -3,13 +3,11 @@ import os
 import time
 from captcha import Captcha
 from selenium import webdriver
-# from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class Card:
     def __init__(self):
         # Set browser UA/Location/Frame size
-        UA ="Mozilla/5.0 (Linux; Android 6.0.1; MI NOTE LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 Mobile Safari/537.36 yiban_android"
+        UA ="Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yiban_iOS/4.9.4"
         mobileEmulation = {"deviceMetrics": {},"userAgent": UA}
         options = webdriver.ChromeOptions()
         options.add_experimental_option('mobileEmulation', mobileEmulation)
@@ -49,6 +47,44 @@ class Card:
             print(fDNS)
             return(1)
         time.sleep(3)
+        return(self.main_process(browser,account))
+    
+    def clock_yiban_backup(self,account,password,phone):
+        browser = self.browser
+        params = self.params
+        browser.execute_cdp_cmd("Emulation.setGeolocationOverride", params)
+        # Login
+        browser.set_window_size(428,926)
+        browser.get('http://yiban.sust.edu.cn/v4/public/index.php/index/formtime/form.html')
+        print('account:{}\npasswd:{}'.format(phone,password))
+        browser.find_element_by_id('oauth_uname_m').send_keys(phone)
+        browser.find_element_by_id('oauth_upwd_m').send_keys(password)
+        browser.find_element_by_xpath('/html/body/main/section[2]/div/div[4]/button').click()
+        time.sleep(5)
+        browser.get('http://f.yiban.cn/iapp610661')
+        time.sleep(10)
+        cur_url = browser.current_url
+        self.update_url(account,cur_url)
+        return(self.main_process(browser,account))
+
+    def update_url(self,account,url):
+        print('检测到备用方案已启用！正在更新Url')
+        with open('account.json','r',encoding='utf-8') as accounts:
+            a_str = accounts.read()
+            a_tup = eval(a_str)
+            a_lst = list(a_tup)
+            accounts.close()
+        for i in range(len(a_lst)):
+            if a_lst[i]['userid'] == account:
+                a_lst[i]['url'] = url
+                print('已更新{}的url为: {}'.format(a_lst[i]['name'],url))
+        with open('account.json','w',encoding='utf-8') as accounts_file:
+            accounts_file.write(str(tuple(a_lst)))
+            print('已写入账号文件！')
+            accounts_file.close()
+    
+    def main_process(self,browser_var,account):
+        browser = browser_var
         try:
             # Open specific iap
             browser.find_element_by_xpath('//p[text()="' + self.exec_method + '"]').click()
@@ -111,4 +147,5 @@ class Card:
                 return(0)
             except:
                 print('遇到了问题')
+                browser.quit()
                 return(1)

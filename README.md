@@ -34,6 +34,14 @@ SU_T students :D
 
 ## Change Log
 
+- 2021.05.29
+
+  > **IMPORTANT NOTICE : You have to regenerate `account.json` by running `initialize.py`, or it will NOT compatible with this version**
+  >
+  > 1.  Changed browser UA to Safari on iOS
+  > 2.  Now the url can be auto-renewed while it expired
+  > 3.  Add a backup mode 
+
 - 2021.05.25
 
   > 1. Fixed Bark push not working

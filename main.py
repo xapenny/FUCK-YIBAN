@@ -23,7 +23,7 @@ USE_SVC = settings[1]['USE_SVC'] #是否开启微信推送 (基于Server Chan)
 USE_BARK = settings[2]['USE_BARK'] #是否开启Bark推送
 
 if __name__ == '__main__':
-    print('准备开始打卡'.center(50,'#'))
+    print('准备开始打卡'.center(30,'#'))
     # Get time
     begin_time = time.time()
     # Cleaning cache...
@@ -55,12 +55,17 @@ if __name__ == '__main__':
             error = ''
             try:
                 try_times += 1  # Count total trys
-                print("\n>> {} 的第{}次尝试开始".format(accounts_info['name'],try_times))
+                print("\n>> {} 的第{}次尝试开始！尝试使用主方案(Url)...".format(accounts_info['name'],try_times))
                 on_progress = Card().clock_yiban(accounts_info['userid'],accounts_info['url'])
                 if on_progress == 0:
                     print('[O]尝试为 {} 打卡成功！'.format(accounts_info['name']))
                 else:
-                    print('[!]尝试为 {} 打卡失败！'.format(accounts_info['name']))
+                    print('[!]尝试为 {} 打卡失败！尝试使用备用方案(Classic)...'.format(accounts_info['name']))
+                    on_progress = Card().clock_yiban_backup(accounts_info['userid'],accounts_info['password'],accounts_info['phone'])
+                    if on_progress:
+                        print('[!]尝试为 {} 打卡失败！准备重试主方案(Url)...'.format(accounts_info['name']))
+                    else:
+                        print('[O]尝试为 {} 打卡成功！'.format(accounts_info['name']))
                 successed_users.append(accounts_info['name'])
                 print('[i]将在{}秒后尝试下一位\n'.format(pending))
                 time.sleep(pending)
@@ -97,7 +102,7 @@ if __name__ == '__main__':
                     barkbot.send_bark_alert('易班打卡失败通知', alert_payload)
     # Notification
     print('\n')
-    print('开始推送通知'.center(50,'#'))
+    print('[i]开始推送通知'.center(30,'#'))
     print('\n')
     # Send summary to admin
     summary = '本次打卡成功！' + ' 共耗时{:.1f}s 用户：'.format(time.time() - begin_time) + '、'.join(successed_users) 
@@ -155,7 +160,7 @@ if __name__ == '__main__':
                         print('[!]遇到了以下问题，推送QQ消息失败！')
                         print(eq)
     print('\n')
-    print('结果通知'.center(50,'#'))
+    print('结果通知'.center(30,'#'))
     print('\n')
     print('[i]打卡完成！5秒后退出...')
     time.sleep(5)

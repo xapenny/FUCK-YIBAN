@@ -11,7 +11,7 @@ class Initialize:
         options.add_argument('--incognito')
         options.add_argument('appversion=4.9.5')
         options.add_argument('X-Requested-With=com.yiban.app')
-        self.browser = webdriver.Chrome('chromedriver.exe',options=options)
+        self.browser = webdriver.Chrome('chromedriver',options=options)
 
 
     def init(self):
@@ -28,8 +28,10 @@ class Initialize:
             username = a[2]
             userid = a[-2]
             url = browser.current_url
+            phone = input('请输入该用户的用户名(一般为手机号，用于备用方案)：')
+            password = input('请输入该用户的密码(用于备用方案)：')
             userqq = input('请输入该用户的QQ号：')
-            info = [True,{'name':username, 'url':url, 'userid':userid, 'userqq':userqq}]
+            info = [True,{'name':username, 'url':url, 'userid':userid, 'userqq':userqq, 'password':password, 'phone':phone}]
             browser.quit()
             return(info)
 
