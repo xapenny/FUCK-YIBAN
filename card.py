@@ -11,7 +11,7 @@ class Card:
         # Set virtual display
         if sys.platform == 'linux':
             print('检测到当前系统为{}，可能没有GUI。正在设置虚拟显示器...'.format(sys.platform))
-            display = Display(visible=0, size=(1920, 1080))
+            display = Display(visible=0, size=(428, 926))
             display.start()
         # Set browser UA/Location/Frame size
         UA ="Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yiban_iOS/4.9.4"
@@ -44,7 +44,8 @@ class Card:
         params = self.params
         browser.execute_cdp_cmd("Emulation.setGeolocationOverride", params)
         # Login
-        browser.set_window_size(428,926)
+        if sys.platform != 'linux':
+            browser.set_window_size(428,926)
         try:
             # print(session_url)
             browser.get(session_url)
@@ -64,7 +65,8 @@ class Card:
         params = self.params
         browser.execute_cdp_cmd("Emulation.setGeolocationOverride", params)
         # Login
-        browser.set_window_size(428,926)
+        if sys.platform != 'linux':
+            browser.set_window_size(428,926)
         try:
             browser.get('http://yiban.sust.edu.cn/v4/public/index.php/index/formtime/form.html')
             browser.find_element_by_id('oauth_uname_m').send_keys(phone)
