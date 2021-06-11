@@ -37,7 +37,8 @@ SU_T students :D
 - 2021.06.11
 
   > 1. Fixed: Bark notifications may not send properly when QQbot is disabled
-  > 2. Some random optimization 
+  > 2. Add support for Linux
+  > 3. Some random optimization 
 
 - 2021.05.29
 

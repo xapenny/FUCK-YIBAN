@@ -1,5 +1,6 @@
+import os
+import sys
 import jieba
-from numpy import packbits
 from selenium import webdriver
 
 class Initialize:
@@ -15,19 +16,30 @@ class Initialize:
 
 
     def init(self):
-        browser = self.browser
-        browser.set_window_size(428,926)
-        browser.get('https://www.yiban.cn/login?go=http://f.yiban.cn/iapp610661')
-        i = input('确定可以看见两个打卡的选项就可以在这里按回车键了，如果显示请重新登陆请输入error后回车，并在新的窗口中重新登录')
+        print('当前运行环境为：{}'.format(sys.platform))
+        if sys.platform != 'linux':
+            browser = self.browser
+            browser.set_window_size(428,926)
+            browser.get('https://www.yiban.cn/login?go=http://f.yiban.cn/iapp610661')
+            i = input('确定可以看见两个打卡的选项就可以在这里按回车键了，如果显示请重新登陆请输入error后回车，并在新的窗口中重新登录')
+        else:
+            print('正在安装xvfb../')
+            os.system('apt update && apt install xvfb')
+            i = 'linux'
         if i == 'error':
             browser.quit()
             return([i])
         else:
-            package = browser.find_element_by_xpath('/html/body/div[1]/div[1]/div[2]').text
-            a = jieba.lcut(package)
-            username = a[2]
-            userid = a[-2]
-            url = browser.current_url
+            if i != 'linux':
+                package = browser.find_element_by_xpath('/html/body/div[1]/div[1]/div[2]').text
+                a = jieba.lcut(package)
+                username = a[2]
+                userid = a[-2]
+                url = browser.current_url
+            else:
+                username = input('请输入该用户姓名：')
+                userid = input('请输入该用户学号：')
+                url = ''
             phone = input('请输入该用户的用户名(一般为手机号，用于备用方案)：')
             password = input('请输入该用户的密码(用于备用方案)：')
             userqq = input('请输入该用户的QQ号：')

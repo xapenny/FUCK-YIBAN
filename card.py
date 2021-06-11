@@ -1,11 +1,18 @@
 #yibanPython.py 
 import os
+import sys
 import time
 from captcha import Captcha
 from selenium import webdriver
+from pyvirtualdisplay import Display
 
 class Card:
     def __init__(self):
+        # Set virtual display
+        if sys.platform == 'linux':
+            print('检测到当前系统为{}，可能没有GUI。正在设置虚拟显示器...'.format(sys.platform))
+            display = Display(visible=0, size=(1920, 1080))
+            display.start()
         # Set browser UA/Location/Frame size
         UA ="Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yiban_iOS/4.9.4"
         mobileEmulation = {"deviceMetrics": {},"userAgent": UA}
@@ -22,7 +29,10 @@ class Card:
         else:
             self.exec_method = '午检上报'
             self.frame_abbr = ['field_1588750276_2934','field_1588750304_5363','field_1588750323_2500','field_1588750343_3510']
-        self.browser = webdriver.Chrome('chromedriver.exe',options=options)
+        if sys.platform == 'win32':
+            self.browser = webdriver.Chrome('chromedriver.exe',options=options)
+        else:
+            self.browser = webdriver.Chrome('chromedriver',options=options)
         self.params = {
             "latitude": 34.203139,
             "longitude": 108.923318,
