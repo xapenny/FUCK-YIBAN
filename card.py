@@ -22,6 +22,9 @@ class Card:
         options.add_argument('appversion=4.9.5')
         options.add_argument('X-Requested-With=com.yiban.app')
         options.add_argument('headless')
+        if sys.platform == 'linux':
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
         self.hour = time.strftime("%H", time.localtime())
         if self.hour in ['06','07','08']:
             self.exec_method = '晨检上报'
