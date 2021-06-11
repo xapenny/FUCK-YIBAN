@@ -17,7 +17,6 @@ class Captcha():
         password = settings[3]['captcha_passwd']
         self.password = md5(password.encode('utf8')).hexdigest()
         self.soft_id = settings[3]['captcha_softid']
-        print(self.soft_id)
 
         self.base_params = {
             'user': self.username,
@@ -53,5 +52,5 @@ class Captcha():
         except:
             self.b64 = img
         response = (self.PostPic(self.b64, int(type)))
-        print('Result: ' + response['pic_str'])
+        print('验证码识别结果: {}'.format(response['pic_str']))
         return response

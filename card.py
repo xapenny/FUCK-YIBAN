@@ -55,17 +55,25 @@ class Card:
         browser.execute_cdp_cmd("Emulation.setGeolocationOverride", params)
         # Login
         browser.set_window_size(428,926)
-        browser.get('http://yiban.sust.edu.cn/v4/public/index.php/index/formtime/form.html')
-        print('account:{}\npasswd:{}'.format(phone,password))
-        browser.find_element_by_id('oauth_uname_m').send_keys(phone)
-        browser.find_element_by_id('oauth_upwd_m').send_keys(password)
-        browser.find_element_by_xpath('/html/body/main/section[2]/div/div[4]/button').click()
-        time.sleep(5)
-        browser.get('http://f.yiban.cn/iapp610661')
-        time.sleep(10)
-        cur_url = browser.current_url
-        self.update_url(account,cur_url)
-        return(self.main_process(browser,account))
+        try:
+            browser.get('http://yiban.sust.edu.cn/v4/public/index.php/index/formtime/form.html')
+            browser.find_element_by_id('oauth_uname_m').send_keys(phone)
+            browser.find_element_by_id('oauth_upwd_m').send_keys(password)
+            browser.find_element_by_xpath('/html/body/main/section[2]/div/div[4]/button').click()
+            time.sleep(5)
+            browser.get('http://f.yiban.cn/iapp610661')
+            time.sleep(5)
+            try:
+                browser.find_element_by_xpath('/html/body/main/section[2]/div/div[2]/button').click()
+            except:
+                pass
+            time.sleep(5)
+            cur_url = browser.current_url
+            self.update_url(account,cur_url)
+            return(self.main_process(browser,account))
+        except:
+            print('备用方案执行失败！')
+            return(self.main_process(browser,account))
 
     def update_url(self,account,url):
         print('检测到备用方案已启用！正在更新Url')
@@ -119,7 +127,7 @@ class Card:
                     browser.execute_script("$('input[id=" + abbr + "]').removeAttr('readonly')")
                 time.sleep(1)
                 # Fill in blanks
-                print(self.frame_abbr[0])
+                print('当前正在执行：{}'.format(self.frame_abbr[0]))
                 browser.find_element_by_id(self.frame_abbr[0]).send_keys('36.5')
                 browser.find_element_by_id(self.frame_abbr[1]).send_keys('陕西省西安市未央区龙朔路靠近陕西科技大学学生生活区')
                 browser.find_element_by_id(self.frame_abbr[2]).send_keys('是')

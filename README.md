@@ -13,7 +13,7 @@
 - [x] QQ / Wechat notification
 - [x] WebUI management
 - [ ] ~~Failure warning from backup server~~ No longer needed, just go and subscribe the official wechat account to get the alarm.
-- [ ] Non-GUI mode to reduce hardware utilization
+- [x] Non-GUI mode to reduce hardware utilization
 
 ## Requirements
 
@@ -34,6 +34,11 @@ SU_T students :D
 
 ## Change Log
 
+- 2021.06.11
+
+  > 1. Fixed: Bark notifications may not send properly when QQbot is disabled
+  > 2. Some random optimization 
+
 - 2021.05.29
 
   > **IMPORTANT NOTICE : You have to regenerate `account.json` by running `initialize.py`, or it will NOT compatible with this version**
@@ -44,7 +49,7 @@ SU_T students :D
 
 - 2021.05.25
 
-  > 1. Fixed Bark push not working
+  > 1. Fixed: Bark push not working
 
 - 2021.05.24
 

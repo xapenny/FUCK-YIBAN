@@ -34,11 +34,14 @@ if __name__ == '__main__':
             delta = begin_time - mark_time
             # Is the mark expired?
             if delta > 10800:
-                if os.path.exists('./images/bark.sent'):
-                    os.remove('./images/bark.sent')
-                if os.path.exists('./images/wechat.sent'):
-                    os.remove('./images/wechat.sent')
                 os.remove(notification_mark)
+    for notification_mark in ['bark', 'wechat']:
+        if os.path.exists('./images/{}.sent'.format(notification_mark)):
+            mark_time = os.path.getmtime('./images/{}.sent'.format(notification_mark))
+            delta = begin_time - mark_time
+            # Is the mark expired?
+            if delta > 10800:
+                os.remove('./images/{}.sent'.format(notification_mark))
     # Set bots
     if USE_SVC:
         wechatbot = ServerChan()
@@ -59,6 +62,7 @@ if __name__ == '__main__':
                 on_progress = Card().clock_yiban(accounts_info['userid'],accounts_info['url'])
                 if on_progress == 0:
                     print('[O]尝试为 {} 打卡成功！'.format(accounts_info['name']))
+                    successed_users.append(accounts_info['name'])
                 else:
                     print('[!]尝试为 {} 打卡失败！尝试使用备用方案(Classic)...'.format(accounts_info['name']))
                     on_progress = Card().clock_yiban_backup(accounts_info['userid'],accounts_info['password'],accounts_info['phone'])
@@ -66,7 +70,7 @@ if __name__ == '__main__':
                         print('[!]尝试为 {} 打卡失败！准备重试主方案(Url)...'.format(accounts_info['name']))
                     else:
                         print('[O]尝试为 {} 打卡成功！'.format(accounts_info['name']))
-                successed_users.append(accounts_info['name'])
+                        successed_users.append(accounts_info['name'])
                 print('[i]将在{}秒后尝试下一位\n'.format(pending))
                 time.sleep(pending)
             except Exception as err:
@@ -76,8 +80,8 @@ if __name__ == '__main__':
                 on_progress = 1
                 error = err
             # Overtry alert
-            if try_times > 15:
-                fail = '[!]已经尝试为{}打卡失败{}次，将不再尝试，请手动打卡！\n\n失败原因：{}'.format(accounts_info['name'], pending, error)
+            if try_times > 30:
+                fail = '[!]已经尝试为{}打卡失败{}次，将不再尝试，请手动打卡！\n\n失败原因：{}'.format(accounts_info['name'], str(try_times), error)
                 print(fail)
                 on_progress = 0
                 if os.path.exists('./images/{}.png'.format(accounts_info['userid'])):
@@ -89,7 +93,7 @@ if __name__ == '__main__':
                 if USE_BARK:
                     barkbot.send_bark_alert('易班打卡失败通知', alert_payload)
             elif try_times % 10 == 0:
-                alert_payload = '[!]尝试为{}打卡失败！已经尝试{}次，继续尝试中。。。\n\n失败原因：{}'.format(accounts_info['name'], str(try_times),error)
+                alert_payload = '[!]尝试为{}打卡失败！已经尝试{}次，继续尝试中。。。\n\n失败原因：{}'.format(accounts_info['name'], str(try_times), error)
                 print(alert_payload)
                 if USE_SVC:
                         # Send Wechat message to alert admin

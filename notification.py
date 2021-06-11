@@ -119,15 +119,12 @@ class XiaoLzBot:
         payload_body = 'fromqq=' + self.botqq + '&toqq=' + str(qq_id) + '&text=' + urllib.parse.quote(data_body)
         response4 = requests.post(url=self.botaddr + '/sendprivatemsg', data=payload_body.encode('utf-8'), cookies=self.cookies)
         r4t = response4.text
-        # print(r4t)
         return 0
 
     def send_image_to_friends(self, image_path, qq_id):
-        # files = {'pic': open(image_path, 'rb')}           
         payload_body = 'fromqq=' + self.botqq + '&toqq=' + str(qq_id) + '&fromtype=1&path=' + urllib.parse.quote(os.getcwd() + '\\' + image_path)
         response = requests.post(url = self.botaddr + '/sendprivatepic', data=payload_body, cookies=self.cookies)
         imageid = response.text.replace('\\','')[8:-2]
-        # print(imageid)
         self.send_to_friend(imageid, qq_id)
         return 0
 
