@@ -37,6 +37,7 @@ class Initialize:
                 username = a[2]
                 userid = a[-2]
                 url = browser.current_url
+                browser.quit()
             else:
                 username = input('请输入该用户姓名：')
                 userid = input('请输入该用户学号：')
@@ -45,7 +46,6 @@ class Initialize:
             password = input('请输入该用户的密码(用于备用方案)：')
             userqq = input('请输入该用户的QQ号：')
             info = [True,{'name':username, 'url':url, 'userid':userid, 'userqq':userqq, 'password':password, 'phone':phone}]
-            browser.quit()
             return(info)
 
 def confirm(question):
