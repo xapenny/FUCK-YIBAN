@@ -113,5 +113,5 @@ if __name__ == '__main__':
     with open('settings.json','w') as settings:
         settings.write(str(tuple(settings_list)))
         settings.close()
-    
-
+    print('创建截图文件夹..')
+    os.system('mkdir images')
