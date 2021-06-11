@@ -5,14 +5,15 @@ from selenium import webdriver
 
 class Initialize:
     def __init__(self):
-        # Set browser UA/Location/Frame size
-        UA ="Mozilla/5.0 (Linux; Android 6.0.1; MI NOTE LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 Mobile Safari/537.36 yiban_android"
-        mobileEmulation = {"deviceMetrics": {},"userAgent": UA}
-        options = webdriver.ChromeOptions()
-        options.add_argument('--incognito')
-        options.add_argument('appversion=4.9.5')
-        options.add_argument('X-Requested-With=com.yiban.app')
-        self.browser = webdriver.Chrome('chromedriver',options=options)
+        if sys.platform != 'linux':
+            # Set browser UA/Location/Frame size
+            UA ="Mozilla/5.0 (Linux; Android 6.0.1; MI NOTE LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 Mobile Safari/537.36 yiban_android"
+            mobileEmulation = {"deviceMetrics": {},"userAgent": UA}
+            options = webdriver.ChromeOptions()
+            options.add_argument('--incognito')
+            options.add_argument('appversion=4.9.5')
+            options.add_argument('X-Requested-With=com.yiban.app')
+            self.browser = webdriver.Chrome('chromedriver',options=options)
 
 
     def init(self):
