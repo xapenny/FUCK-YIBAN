@@ -150,7 +150,11 @@ if __name__ == '__main__':
                 else:
                     try:
                         qqbot = XiaoLzBot()
-                        payload = 'images\\' + user_info['userid'] + '.png'
+                        print('[i]开始推送QQ消息')
+                        if sys.platform == 'linux':
+                            payload = '\\FUCK-YIBAN\\images\\' + user_info['userid'] + '.png'
+                        else:
+                            payload = 'images\\' + user_info['userid'] + '.png'
                         if os.path.exists(payload):
                             send2qq = qqbot.send_image_to_friends(payload, user_info['userqq'])
                             if send2qq:
