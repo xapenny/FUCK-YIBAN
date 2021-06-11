@@ -55,10 +55,11 @@ class Card:
 
         except Exception as e:
             browser.quit()
-            print('打开页面失败！尝试清空DNS缓存……')
-            print(e)
-            fDNS = os.system('ipconfig /flushdns')
-            print(fDNS)
+            if sys.platform == 'win32':
+                print('打开页面失败！尝试清空DNS缓存……')
+                print(e)
+                fDNS = os.system('ipconfig /flushdns')
+                print(fDNS)
             return(1)
         time.sleep(3)
         return(self.main_process(browser,account))
@@ -72,9 +73,13 @@ class Card:
             browser.set_window_size(428,926)
         try:
             browser.get('http://yiban.sust.edu.cn/v4/public/index.php/index/formtime/form.html')
-            browser.find_element_by_id('oauth_uname_m').send_keys(phone)
-            browser.find_element_by_id('oauth_upwd_m').send_keys(password)
-            browser.find_element_by_xpath('/html/body/main/section[2]/div/div[4]/button').click()
+            print(browser.title)
+            time.sleep(5)
+            browser.get_screenshot_as_file('./imag.png')
+            browser.find_element_by_xpath('/html/body/main/section[1]/div/div[1]/input').send_keys(phone)
+            browser.find_element_by_xpath('/html/body/main/section[1]/div/div[2]/input').send_keys(password)
+            browser.get_screenshot_as_file('./imag2.png')
+            browser.find_element_by_xpath('/html/body/main/section[1]/div/div[4]/button[1]').click()
             time.sleep(5)
             browser.get('http://f.yiban.cn/iapp610661')
             time.sleep(5)
