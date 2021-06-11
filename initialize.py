@@ -60,7 +60,10 @@ def confirm(question):
 if __name__ == '__main__':
     # 账号设置
     account_list = []
-    input('按回车键开始设置打卡脚本，请在接下来弹出的窗口中登陆易班账号。登陆完成后在本窗口按回车键继续。')
+    if sys.platform != 'linux':
+        input('按回车键开始设置打卡脚本，请在接下来弹出的窗口中登陆易班账号。登陆完成后在本窗口按回车键继续。\n')
+    else:
+        input('开始设置打卡脚本，按回车键继续...\n')
     result = [True]
     while result[0]:
         result = Initialize().init()
@@ -70,7 +73,7 @@ if __name__ == '__main__':
         accounts_file.write(str(tuple(account_list)))
         accounts_file.close()
     # 其他设置
-    input('\n\n接下来，我们将设置其他部分(按回车键继续)')
+    input('\n\n接下来，我们将设置其他部分(按回车键继续)\n')
     settings_list = []
     use_qqbot = confirm('使用QQ机器人吗')
     if use_qqbot:
@@ -102,7 +105,7 @@ if __name__ == '__main__':
     else:
         settings_list.append({'USE_BARK':use_bark})
     # 设置验证码识别
-    print('接下来将设置验证码识别api')
+    input('\n\n接下来将设置验证码识别api(按回车键继续)\n')
     captcha_username = input('请输入CYY验证码识别平台用户名：')
     captcha_passwd = input('请输入密码：')
     captcha_softid = input('请输入softid：')
