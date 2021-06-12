@@ -58,13 +58,13 @@ if __name__ == '__main__':
             error = ''
             try:
                 try_times += 1  # Count total trys
-                print("\n>> {} 的第{}次尝试开始！尝试使用主方案(Url)...".format(accounts_info['name'],try_times))
+                print("\n>> {} 的第{}次尝试开始！尝试使用主方案(GET)...".format(accounts_info['name'],try_times))
                 on_progress = Card().clock_yiban(accounts_info['userid'],accounts_info['url'])
                 if on_progress == 0:
                     print('[O]尝试为 {} 打卡成功！'.format(accounts_info['name']))
                     successed_users.append(accounts_info['name'])
                 else:
-                    print('[!]尝试为 {} 打卡失败！尝试使用备用方案(Classic)...'.format(accounts_info['name']))
+                    print('[!]尝试为 {} 打卡失败！尝试使用备用方案(Selenium)...'.format(accounts_info['name']))
                     on_progress = Card().clock_yiban_backup(accounts_info['userid'],accounts_info['password'],accounts_info['phone'])
                     if on_progress:
                         print('[!]尝试为 {} 打卡失败！准备重试主方案(Url)...'.format(accounts_info['name']))
