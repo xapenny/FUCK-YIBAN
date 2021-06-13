@@ -1,5 +1,6 @@
 #yiban autoclock
 import os
+import sys
 import time
 import random
 from card import Card
@@ -115,7 +116,7 @@ if __name__ == '__main__':
             print('[O]已经推送过Bark消息了，跳过……')
         else:
             print('[i]开始推送Bark消息')
-            barkbot.send_bark_alert('易班打卡成功通知', summary)
+            barkbot.send_bark_alert('易班打卡成功通知【西安】', summary)
             with open('./images/bark.sent','w') as b:
                 b.close()
     if USE_SVC:

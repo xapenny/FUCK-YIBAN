@@ -55,6 +55,9 @@ class Card:
 
         except Exception as e:
             browser.quit()
+            if sys.platform == 'linux':
+                display.quit()
+                display.stop()
             if sys.platform == 'win32':
                 print('打开页面失败！尝试清空DNS缓存……')
                 print(e)
@@ -119,6 +122,9 @@ class Card:
             time.sleep(3)
         except:
             browser.quit()
+            if sys.platform == 'linux':
+                display.quit()
+                display.stop()
             print('找不到签到入口，请检查信息录入是否正确！')
             return(1)
         # Did u already finished the process?
@@ -134,6 +140,9 @@ class Card:
                     print(e)
             browser.delete_all_cookies()
             browser.quit()
+            if sys.platform == 'linux':
+                display.quit()
+                display.stop()
             return(0)
         except: 
             try:
@@ -172,8 +181,14 @@ class Card:
                     print(e)
                 browser.delete_all_cookies()
                 browser.quit()
+                if sys.platform == 'linux':
+                    display.quit()
+                    display.stop()
                 return(0)
             except:
                 print('遇到了问题')
                 browser.quit()
+                if sys.platform == 'linux':
+                    display.quit()
+                    display.stop()
                 return(1)
