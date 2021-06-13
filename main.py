@@ -92,7 +92,7 @@ if __name__ == '__main__':
                         XiaoLzBot().send_to_friend(fail, settings[0]['adminqq'])
                         XiaoLzBot().send_to_friend(fail, accounts_info['userqq'])
                 if USE_BARK:
-                    barkbot.send_bark_alert('易班打卡失败通知', alert_payload)
+                    barkbot.send_bark_alert('易班打卡失败通知【西安】', alert_payload)
             elif try_times % 10 == 0:
                 alert_payload = '[!]尝试为{}打卡失败！已经尝试{}次，继续尝试中。。。\n\n失败原因：{}'.format(accounts_info['name'], str(try_times), error)
                 print(alert_payload)
@@ -104,7 +104,7 @@ if __name__ == '__main__':
                         XiaoLzBot().send_to_friend(alert_payload, settings[0]['adminqq'])
                         XiaoLzBot().send_to_friend(alert_payload, accounts_info['userqq'])
                 if USE_BARK:
-                    barkbot.send_bark_alert('易班打卡失败通知', alert_payload)
+                    barkbot.send_bark_alert('易班打卡失败通知【西安】', alert_payload)
     # Notification
     print('\n')
     print('[i]开始推送通知'.center(30,'#'))

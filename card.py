@@ -8,11 +8,11 @@ from pyvirtualdisplay import Display
 
 class Card:
     def __init__(self):
-        # Set virtual display
+        # Set virtual self.display
         if sys.platform == 'linux':
             print('检测到当前系统为{}，可能没有GUI。正在设置虚拟显示器...'.format(sys.platform))
-            display = Display(visible=0, size=(428, 926))
-            display.start()
+            self.display = Display(visible=0, size=(428, 926))
+            self.display.start()
         # Set browser UA/Location/Frame size
         UA ="Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 yiban_iOS/4.9.4"
         mobileEmulation = {"deviceMetrics": {},"userAgent": UA}
@@ -56,8 +56,7 @@ class Card:
         except Exception as e:
             browser.quit()
             if sys.platform == 'linux':
-                display.quit()
-                display.stop()
+                self.display.stop()
             if sys.platform == 'win32':
                 print('打开页面失败！尝试清空DNS缓存……')
                 print(e)
@@ -78,11 +77,9 @@ class Card:
             browser.get('http://yiban.sust.edu.cn/v4/public/index.php/index/formtime/form.html')
             print(browser.title)
             time.sleep(5)
-            browser.get_screenshot_as_file('./imag.png')
-            browser.find_element_by_xpath('/html/body/main/section[1]/div/div[1]/input').send_keys(phone)
-            browser.find_element_by_xpath('/html/body/main/section[1]/div/div[2]/input').send_keys(password)
-            browser.get_screenshot_as_file('./imag2.png')
-            browser.find_element_by_xpath('/html/body/main/section[1]/div/div[4]/button[1]').click()
+            browser.find_element_by_id('oauth_uname_m').send_keys(phone)
+            browser.find_element_by_id('oauth_upwd_m').send_keys(password)
+            browser.find_element_by_xpath('/html/body/main/section[2]/div/div[4]/button').click()  
             time.sleep(5)
             browser.get('http://f.yiban.cn/iapp610661')
             time.sleep(5)
@@ -94,8 +91,9 @@ class Card:
             cur_url = browser.current_url
             self.update_url(account,cur_url)
             return(self.main_process(browser,account))
-        except:
+        except Exception as err:
             print('备用方案执行失败！')
+            print(err)
             return(self.main_process(browser,account))
 
     def update_url(self,account,url):
@@ -123,8 +121,7 @@ class Card:
         except:
             browser.quit()
             if sys.platform == 'linux':
-                display.quit()
-                display.stop()
+                self.display.stop()
             print('找不到签到入口，请检查信息录入是否正确！')
             return(1)
         # Did u already finished the process?
@@ -141,8 +138,7 @@ class Card:
             browser.delete_all_cookies()
             browser.quit()
             if sys.platform == 'linux':
-                display.quit()
-                display.stop()
+                self.display.stop()
             return(0)
         except: 
             try:
@@ -182,13 +178,11 @@ class Card:
                 browser.delete_all_cookies()
                 browser.quit()
                 if sys.platform == 'linux':
-                    display.quit()
-                    display.stop()
+                    self.display.stop()
                 return(0)
             except:
                 print('遇到了问题')
                 browser.quit()
                 if sys.platform == 'linux':
-                    display.quit()
-                    display.stop()
+                    self.display.stop()
                 return(1)
