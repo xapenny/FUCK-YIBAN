@@ -2,13 +2,15 @@
 # coding=utf-8
 import requests
 import os
+import time
+import hashlib
 import urllib.request
 import json as js
 import urllib
 import urllib.parse
 
 settings = []
-with open('settings.json','r',encoding='utf-8') as setting_file:
+with open('settings.ini','r') as setting_file:
     settings = eval(setting_file.read())
     setting_file.close()
 
@@ -105,28 +107,74 @@ class XiaoLzBot:
         self.adminqq = settings[0]['adminqq']
         self.botauthkey = settings[0]['botauthkey'] #32bit MD5 encryption
         self.botaddr = settings[0]['botaddr']
-        self.cookies = {'pass':self.botauthkey}
+        self.botpass = settings[0]['botpass']
+        #self.cookies = {'pass':self.botauthkey}
+
+    def get_cookie(self, operation):
+        timestamp = str(int(time.time()))
+        user = 'xapenny'
+        exec_location = "{}{}".format(user, operation)
+        passw = hashlib.md5(self.botpass.encode('utf-8')).hexdigest()
+        authkey = hashlib.md5(str(exec_location+passw+timestamp).encode('utf-8')).hexdigest()
+        cookies = {
+            'user':user,
+            'timestamp':timestamp,
+            'signature':authkey
+        }
+        print(cookies)
+        return cookies
 
     def send_to_qq_group(self, data_body, qq_group_id):
-        payload_body = 'fromqq=' + self.botqq + '&togroup=' + str(qq_group_id) + '&text=' + urllib.parse.quote(data_body)
-        response4 = requests.post(url=self.botaddr + '/sendgroupmsg', data=payload_body.encode('utf-8'), cookies=self.cookies)
+        operation = '/sendgroupmsg'
+        payload_body = 'logonqq=' + self.botqq + '&group=' + str(qq_group_id) + '&msg=' + urllib.parse.quote(data_body)
+        cookie = self.get_cookie(operation)
+        response4 = requests.post(url=self.botaddr + operation, data=payload_body.encode('utf-8'), cookies=cookie)
         r4t = response4.text
-        print(payload_body)
-        print(r4t)
-        return 0
+        return True
+
+    def call_friend(self, dest_qq):
+        operation = '/callfriend'
+        payload_body = 'logonqq=' + self.botqq + '&toqq=' + str(dest_qq)
+        cookie = self.get_cookie(operation)
+        response4 = requests.post(url=self.botaddr + operation, data=payload_body.encode('utf-8'), cookies=cookie)
+        r4t = response4.text
+        return True
+    
+    def send_like(self, dest_qq):
+        operation = '/sendlike'
+        payload_body = 'logonqq=' + self.botqq + '&toqq=' + str(dest_qq)
+        cookie = self.get_cookie(operation)
+        response4 = requests.post(url=self.botaddr + operation, data=payload_body.encode('utf-8'), cookies=cookie)
+        r4t = response4.text
+        return True
 
     def send_to_friend(self, data_body, qq_id):
-        payload_body = 'fromqq=' + self.botqq + '&toqq=' + str(qq_id) + '&text=' + urllib.parse.quote(data_body)
-        response4 = requests.post(url=self.botaddr + '/sendprivatemsg', data=payload_body.encode('utf-8'), cookies=self.cookies)
+        operation = '/sendprivatemsg'
+        payload_body = 'logonqq=' + self.botqq + '&toqq=' + str(qq_id) + '&msg=' + urllib.parse.quote(data_body)
+        cookie = self.get_cookie(operation)
+        response4 = requests.post(url=self.botaddr + operation, data=payload_body.encode('utf-8'), cookies=cookie)
         r4t = response4.text
-        return 0
+        # print(r4t)
+        return True
 
-    def send_image_to_friends(self, image_path, qq_id):
-        payload_body = 'fromqq=' + self.botqq + '&toqq=' + str(qq_id) + '&fromtype=1&path=' + urllib.parse.quote(os.getcwd() + '\\' + image_path)
-        response = requests.post(url = self.botaddr + '/sendprivatepic', data=payload_body, cookies=self.cookies)
-        imageid = response.text.replace('\\','')[8:-2]
-        self.send_to_friend(imageid, qq_id)
-        return 0
+    def send_image_to_friends(self, image_path, qq_id, text=''):
+        operation = '/uploadfriendpic'
+        payload_body = 'logonqq=' + self.botqq + '&toqq=' + str(qq_id) + '&type=path&pic=' + urllib.parse.quote("{}\\".format(os.getcwd()) + image_path)
+        cookie = self.get_cookie(operation)
+        response = requests.post(url = self.botaddr + operation, data=payload_body, cookies=cookie)
+        print(response.text)
+        imageid = eval(response.text)['ret']
+        self.send_to_friend(text+'\n'+imageid, qq_id)
+        return True
+    
+    def send_image_to_group(self, image_path, qq_id, text=''):
+        operation = '/uploadgrouppic'  
+        payload_body = 'logonqq=' + self.botqq + '&group=' + str(qq_id) + '&type=path&pic=' + urllib.parse.quote("{}\\".format(os.getcwd()) + image_path)
+        cookie = self.get_cookie(operation)
+        response = requests.post(url = self.botaddr + operation, data=payload_body, cookies=cookie)
+        imageid = eval(response.text)['ret']
+        self.send_to_qq_group(text+'\n'+imageid, qq_id)
+        return True
 
 class ServerChan:
     def __init__(self):

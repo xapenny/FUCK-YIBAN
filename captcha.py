@@ -6,7 +6,7 @@ import requests
 from hashlib import md5
 
 settings = []
-with open('settings.json','r',encoding='utf-8') as setting_file:
+with open('settings.ini','r',encoding='utf-8') as setting_file:
     settings = eval(setting_file.read())
     setting_file.close()
 

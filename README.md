@@ -29,10 +29,15 @@ SU_T students :D
 
 1. Install requirements via pip
 2. Install ` chromedriver` and `Google Chrome`
-3. Run `python3 initialize.py` and go through the whole settings
+3. Run `python3 config.py` then choose initialize and go through the whole settings
 4. Run `python3 main.py` and enjoy
 
 ## Change Log
+
+- 2021.07.25
+
+> 1. Add custom location support
+> 2. Add config functionality
 
 - 2021.06.11
 
@@ -42,7 +47,7 @@ SU_T students :D
 
 - 2021.05.29
 
-  > **IMPORTANT NOTICE : You have to regenerate `account.json` by running `initialize.py`, or it will NOT compatible with this version**
+  > **IMPORTANT NOTICE : You have to regenerate `account.ini` by running `config.py`, or it will NOT compatible with this version**
   >
   > 1.  Changed browser UA to Safari on iOS
   > 2.  Now the url can be auto-renewed while it expired
