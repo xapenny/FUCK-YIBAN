@@ -14,7 +14,7 @@ class Card:
         options.add_argument('--incognito')
         options.add_argument('appversion=4.9.5')
         options.add_argument('X-Requested-With=com.yiban.app')
-        # options.add_argument('headless')
+        options.add_argument('headless')
         self.hour = time.strftime("%H", time.localtime())
         if self.hour in ['06','07','08']:
             self.exec_method = '晨检上报'
@@ -128,7 +128,7 @@ class Card:
                 # Fill in blanks
                 browser.find_element_by_id(self.frame_abbr[0]).send_keys('36.5')
                 browser.find_element_by_id(self.frame_abbr[1]).send_keys(location)
-                browser.find_element_by_id(self.frame_abbr[2]).send_keys('是')
+                browser.find_element_by_id(self.frame_abbr[2]).send_keys('否')
                 browser.find_element_by_id(self.frame_abbr[3]).send_keys('否')
                 print('已填写个人信息')
                 time.sleep(5)

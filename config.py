@@ -143,10 +143,15 @@ def initialize():
     if use_qqbot:
         if confirm('使用Mirai(Y)还是小栗子(N)作为机器人框架'):
             use_qqbot = 1
-            # Mirai 狗都不用
+            # 设置 MAH
+            botqq = input('请设置机器人的QQ号：')
+            adminqq = input('请设置管理员的QQ号：')
+            botauthkey = input('请输入为机器人设置的authkey：')
+            botaddr = input('请输入机器人的连接地址(以http://开头)：')
+            settings_list.append({'USE_QQBOT':use_qqbot,'botqq':botqq,'adminqq':adminqq,'botauthkey':botauthkey,'botaddr':botaddr})
         else:
             use_qqbot = 2
-            # 设置小栗子框架
+            # 设置小栗子HA
             botqq = input('请设置机器人的QQ号：')
             adminqq = input('请设置管理员的QQ号：')
             botauthkey = input('请输入为机器人设置的authkey：')

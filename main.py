@@ -24,6 +24,9 @@ USE_BARK = settings[2]['USE_BARK'] #是否开启Bark推送
 
 if __name__ == '__main__':
     print('准备开始打卡'.center(30,'#'))
+    #wa1t = random.randint(300,1800)
+    #print('wa1ting {} secs...'.format(wa1t))
+    #time.sleep(wa1t)
     print('\n')
     # Get time
     begin_time = time.time()
@@ -81,7 +84,9 @@ if __name__ == '__main__':
                 print('[!]遇到了以下问题！将在{}秒后继续尝试\n'.format(pending))
                 print(err)
                 if USE_QQ_BOT:
-                    if USE_QQ_BOT == 2:
+                    if USE_QQ_BOT == 1:
+                        MiraiBot().send_to_friend(err, settings[0]['adminqq'])
+                    elif USE_QQ_BOT == 2:
                         XiaoLzBot().send_to_friend(err, settings[0]['adminqq'])
                 time.sleep(pending)
                 on_progress = False
@@ -94,7 +99,10 @@ if __name__ == '__main__':
                 if os.path.exists('./images/{}.png'.format(accounts_info['userid'])):
                     os.remove('./images/{}.png'.format(accounts_info['userid']))
                 if USE_QQ_BOT:
-                    if USE_QQ_BOT == 2:
+                    if USE_QQ_BOT == 1:
+                        MiraiBot().send_to_friend(fail, settings[0]['adminqq'])
+                        MiraiBot().send_to_friend(fail, accounts_info['userqq'])
+                    elif USE_QQ_BOT == 2:
                         XiaoLzBot().send_to_friend(fail, settings[0]['adminqq'])
                         XiaoLzBot().send_to_friend(fail, accounts_info['userqq'])
                         XiaoLzBot().call_friend(accounts_info['userqq'])
@@ -107,7 +115,10 @@ if __name__ == '__main__':
                         # Send Wechat message to alert admin
                         wechatbot.send_wechat_message(alert_payload)
                 if USE_QQ_BOT:
-                    if USE_QQ_BOT == 2:
+                    if USE_QQ_BOT == 1:
+                        MiraiBot().send_to_friend(alert_payload, settings[0]['adminqq'])
+                        MiraiBot().send_to_friend(alert_payload, accounts_info['userqq'])
+                    elif USE_QQ_BOT == 2:
                         XiaoLzBot().send_to_friend(alert_payload, settings[0]['adminqq'])
                         XiaoLzBot().send_to_friend(alert_payload, accounts_info['userqq'])
                 if USE_BARK:
@@ -142,37 +153,36 @@ if __name__ == '__main__':
                             print('[!]{}的账户被禁用，不推送消息'.format(user_info['name']))
             else:
                 # Send to QQ
+                payload_final = f"您好，{user_info['name']}\\n现在是{time.strftime('%Y-%m-%d, %H:%M:%S')}\\n已经完成了易班打卡！\\n注意，如果已经收到过成功的消息即代表成功，此后2小时内的失败消息可以忽略。"
                 if USE_QQ_BOT == 1:
-                    try:
-                        print('[i]开始推送QQ消息')
-                        qqbot = MiraiBot()
-                        send2qq = qqbot.send_image_from_file('./images/{}.png'.format(user_info['userid']), user_info['userqq'])
+                    if 1:
+                        print('[i]开始推送QQ消息(Mirai)')
+                        send2qq = MiraiBot().send_to_friend(payload_final, user_info['userqq'], './images/{}.png'.format(user_info['userid']))
                         if send2qq:
                             print('[!]已经将结果发送至目标QQ！')
-                        else:
-                            print('[!]发送QQ截图失败！')
                             # Set mark
                             mark = open('./images/{}.sent'.format(user_info['userid']), 'w+')
                             mark.close()
-                    except Exception as eq:
-                        print('[!]遇到了以下问题，推送QQ消息失败！')
-                        print(eq)
-                else:
+                        else:
+                            print('[!]发送QQ截图失败！')
+                    # except Exception as eq:
+                    #     print('[!]遇到了以下问题，推送QQ消息失败！')
+                    #     print(eq)
+                elif USE_QQ_BOT == 2:
                     try:
-                        qqbot = XiaoLzBot()
+                        print('[i]开始推送QQ消息(XiaoLz)')
                         payload = 'images\\' + user_info['userid'] + '.png'
                         if os.path.exists(payload):
                             print('5秒后为{}推送消息...'.format(user_info['name']))
                             time.sleep(5)
-                            #send2qq = qqbot.send_image_to_friends(payload, user_info['userqq'], '您好，{}\n现在是{}\n已经完成了易班打卡！\n注意，如果已经收到过成功的消息即代表成功，此后2小时内的失败消息可以忽略。'.format(user_info['name'],time.strftime("%Y-%m-%d, %H:%M:%S")))
-                            send2qq = qqbot.send_to_friend('您好，{}\n现在是{}\n已经完成了易班打卡！\n注意，如果已经收到过成功的消息即代表成功，此后2小时内的失败消息可以忽略。'.format(user_info['name'],time.strftime("%Y-%m-%d, %H:%M:%S")), user_info['userqq'])
+                            send2qq = XiaoLzBot().send_to_friend(payload_final)
                             if send2qq:
                                 print('[O]已经将结果发送至目标QQ！')
+                                # Set mark
+                                mark = open('./images/{}.sent'.format(user_info['userid']), 'w+')
+                                mark.close()
                             else:
                                 print('[!]发送QQ截图失败！')
-                        # Set mark
-                        mark = open('./images/{}.sent'.format(user_info['userid']), 'w+')
-                        mark.close()
                     except Exception as eq:
                         print('[!]遇到了以下问题，推送QQ消息失败！')
                         print(eq)
@@ -180,4 +190,6 @@ if __name__ == '__main__':
     print('结果通知'.center(30,'#'))
     print('\n')
     print('[i]打卡完成！5秒后退出...')
+    if USE_QQ_BOT == 1:
+        MiraiBot().release_session()
     time.sleep(5)

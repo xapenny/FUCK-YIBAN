@@ -34,6 +34,11 @@ SU_T students :D
 
 ## Change Log
 
+- 2021.08.10
+
+  > 1. Fixed MAH(Mirai-Api-Http) support.
+  > 2. Add notification api info
+
 - 2021.07.25
 
 > 1. Add custom location support
