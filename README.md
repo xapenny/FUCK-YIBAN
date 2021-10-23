@@ -34,6 +34,10 @@ SU_T students :D
 
 ## Change Log
 
+- 2021.10.23
+
+  > 1. FUCK-YIBAN now use json file to store data.
+
 - 2021.08.10
 
   > 1. Fixed MAH(Mirai-Api-Http) support.
@@ -41,8 +45,8 @@ SU_T students :D
 
 - 2021.07.25
 
-> 1. Add custom location support
-> 2. Add config functionality
+  > 1. Add custom location support
+  > 2. Add config functionality
 
 - 2021.06.11
 

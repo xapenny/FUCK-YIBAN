@@ -11,17 +11,17 @@ import urllib
 import urllib.parse
 
 settings = []
-with open('settings.ini','r') as setting_file:
-    settings = eval(setting_file.read())
-    setting_file.close()
+with open('settings.json','r',encoding='utf-8') as _settings:
+    settings = json.load(_settings)
+    _settings.close()
 
 class MiraiBot:
 
     def __init__(self):
-        self.botqq = settings[0]['botqq']
-        self.adminqq = settings[0]['adminqq']
-        self.botauthkey = settings[0]['botauthkey']
-        self.botaddr = settings[0]['botaddr']
+        self.botqq = settings['qq']['botqq']
+        self.adminqq = settings['qq']['adminqq']
+        self.botauthkey = settings['qq']['botauthkey']
+        self.botaddr = settings['qq']['botaddr']
         session = self.get_session()
         self.session_code = session[0]
         self.session_body = session[1]
@@ -141,11 +141,11 @@ class MiraiBot:
 class XiaoLzBot:
 
     def __init__(self):
-        self.botqq = settings[0]['botqq']
-        self.adminqq = settings[0]['adminqq']
-        self.botauthkey = settings[0]['botauthkey'] #32bit MD5 encryption
-        self.botaddr = settings[0]['botaddr']
-        self.botpass = settings[0]['botpass']
+        self.botqq = settings['qq']['botqq']
+        self.adminqq = settings['qq']['adminqq']
+        self.botauthkey = settings['qq']['botauthkey'] #32bit MD5 encryption
+        self.botaddr = settings['qq']['botaddr']
+        self.botpass = settings['qq']['botpass']
         #self.cookies = {'pass':self.botauthkey}
 
     def _get_cookie(self, operation):
@@ -229,7 +229,7 @@ class XiaoLzBot:
             * ``qq_id``: 目标好友QQ号
         """
         operation = '/sendprivatemsg'
-        payload_body = 'logonqq=' + self.botqq + '&toqq=' + str(qq_id) + '&msg=' + urllib.parse.quote(data_body)
+        payload_body = f"logonqq={self.botqq}&toqq={str(qq_id)}&toqq={urllib.parse.quote(data_body)}"
         cookie = self._get_cookie(operation)
         response4 = requests.post(url=self.botaddr + operation, data=payload_body.encode('utf-8'), cookies=cookie)
         r4t = response4.text
@@ -277,7 +277,7 @@ class XiaoLzBot:
 
 class ServerChan:
     def __init__(self):
-        self.serverchan_sckey = 'https://sc.ftqq.com/{}.send'.format(settings[1]['svc_key'])
+        self.serverchan_sckey = 'https://sc.ftqq.com/{}.send'.format(settings['wechat']['svc_key'])
     
     def send_wechat_message(self, payload):
         body = {
@@ -288,7 +288,7 @@ class ServerChan:
 
 class Bark:
     def __init__(self):
-        self.pushkey = 'https://api.day.app/{}/'.format(settings[2]['bark_key'])
+        self.pushkey = 'https://api.day.app/{}/'.format(settings['bark']['bark_key'])
     
     def send_bark_alert(self, title, payload):
         body = self.pushkey + title + '/' + payload

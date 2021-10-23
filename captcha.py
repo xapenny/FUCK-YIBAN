@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 # coding:utf-8
 
+import json
 import re
 import requests
 from hashlib import md5
 
 settings = []
-with open('settings.ini','r',encoding='utf-8') as setting_file:
-    settings = eval(setting_file.read())
-    setting_file.close()
+with open('settings.json','r',encoding='utf-8') as _settings:
+    settings = json.load(_settings)
+    _settings.close()
 
 class Captcha():
 
     def __init__(self):
-        self.username = settings[3]['captcha_username']
-        password = settings[3]['captcha_passwd']
+        self.username = settings['captcha']['username']
+        password = settings['captcha']['password']
         self.password = md5(password.encode('utf8')).hexdigest()
-        self.soft_id = settings[3]['captcha_softid']
+        self.soft_id = settings['captcha']['softid']
 
         self.base_params = {
             'user': self.username,
@@ -52,5 +53,5 @@ class Captcha():
         except:
             self.b64 = img
         response = (self.PostPic(self.b64, int(type)))
-        print('验证码识别结果: {}'.format(response['pic_str']))
+        print(f"验证码识别结果: {response['pic_str']}")
         return response

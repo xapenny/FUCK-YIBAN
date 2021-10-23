@@ -1,4 +1,5 @@
 #yibanPython.py 
+import json
 import os
 import time
 from captcha import Captcha
@@ -22,7 +23,7 @@ class Card:
         else:
             self.exec_method = '午检上报'
             self.frame_abbr = ['field_1588750276_2934','field_1588750304_5363','field_1588750323_2500','field_1588750343_3510']
-        self.browser = webdriver.Chrome('chromedriver.exe',options=options)
+        self.browser = webdriver.Chrome('chromedriver',options=options)
         self.params = {
             "latitude": 34.203139,
             "longitude": 108.923318,
@@ -77,18 +78,17 @@ class Card:
 
     def update_url(self,account,url):
         print('检测到备用方案已启用！正在更新Url')
-        with open('accounts.ini','r',encoding='utf-8') as accounts:
-            a_str = accounts.read()
-            a_lst = eval(a_str)
-            accounts.close()
+        with open('accounts.json','r',encoding='utf-8') as _accounts:
+            a_lst = json.load(_accounts)
+            _accounts.close()
         for i in range(len(a_lst)):
             if a_lst[i]['userid'] == account:
                 a_lst[i]['url'] = url
                 print('已更新{}的url为: {}'.format(a_lst[i]['name'],url))
-        with open('accounts.ini','w',encoding='utf-8') as accounts_file:
-            accounts_file.write(str(a_lst))
+        with open('accounts.json','w',encoding='utf-8') as _accounts:
+            json.dump(a_lst, _accounts)
             print('已写入账号文件！')
-            accounts_file.close()
+            _accounts.close()
     
     def main_process(self,browser_var,account,location):
         browser = browser_var
@@ -128,7 +128,7 @@ class Card:
                 # Fill in blanks
                 browser.find_element_by_id(self.frame_abbr[0]).send_keys('36.5')
                 browser.find_element_by_id(self.frame_abbr[1]).send_keys(location)
-                browser.find_element_by_id(self.frame_abbr[2]).send_keys('否')
+                browser.find_element_by_id(self.frame_abbr[2]).send_keys('是')
                 browser.find_element_by_id(self.frame_abbr[3]).send_keys('否')
                 print('已填写个人信息')
                 time.sleep(5)
