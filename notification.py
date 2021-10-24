@@ -229,7 +229,7 @@ class XiaoLzBot:
             * ``qq_id``: 目标好友QQ号
         """
         operation = '/sendprivatemsg'
-        payload_body = f"logonqq={self.botqq}&toqq={str(qq_id)}&toqq={urllib.parse.quote(data_body)}"
+        payload_body = f"logonqq={self.botqq}&toqq={str(qq_id)}&msg={urllib.parse.quote(data_body)}"
         cookie = self._get_cookie(operation)
         response4 = requests.post(url=self.botaddr + operation, data=payload_body.encode('utf-8'), cookies=cookie)
         r4t = response4.text
